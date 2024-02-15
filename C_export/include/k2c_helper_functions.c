@@ -60,9 +60,10 @@ void k2c_matmul(float * C, const float * A, const float * B, const size_t outrow
 void k2c_affine_matmul(float * C, const float * A, const float * B, const float * d,
                        const size_t outrows,const size_t outcols, const size_t innerdim) {
 
+    printf("inside k2c_affine_matmul %d \r\n", __LINE__);
     // make sure output is empty
     memset(C, 0, outrows*outcols*sizeof(C[0]));
-
+    printf("inside k2c_affine_matmul %d \r\n", __LINE__);
     for (size_t i = 0 ; i < outrows; ++i) {
         const size_t outrowidx = i*outcols;
         const size_t inneridx = i*innerdim;
@@ -73,6 +74,7 @@ void k2c_affine_matmul(float * C, const float * A, const float * B, const float 
             C[outrowidx+j] += d[j];
         }
     }
+    printf("inside k2c_affine_matmul %d \r\n", __LINE__);
 }
 
 

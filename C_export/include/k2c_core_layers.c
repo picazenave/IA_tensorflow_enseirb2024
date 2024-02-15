@@ -21,37 +21,45 @@ https://github.com/f0uriest/keras2c
  * :param activation: activation function to apply to output.
  * :param fwork: array of working space, size(fwork) = size(input) + size(kernel)
  */
-void k2c_dense(k2c_tensor* output, const k2c_tensor* input, const k2c_tensor* kernel,
-               const k2c_tensor* bias, k2c_activationType *activation, float * fwork) {
+void k2c_dense(k2c_tensor *output, const k2c_tensor *input, const k2c_tensor *kernel,
+               const k2c_tensor *bias, k2c_activationType *activation, float *fwork)
+{
 
-    if (input->ndim <=2) {
+    if (input->ndim <= 2)
+    {
         size_t outrows;
-
-        if (input->ndim>1) {
+        printf("inside k2c_dense %d \r\n", __LINE__);
+        if (input->ndim > 1)
+        {
             outrows = input->shape[0];
         }
-        else {
+        else
+        {
             outrows = 1;
         }
         const size_t outcols = kernel->shape[1];
         const size_t innerdim = kernel->shape[0];
-        const size_t outsize = outrows*outcols;
-        k2c_affine_matmul(output->array,input->array,kernel->array,bias->array,
-                          outrows,outcols,innerdim);
-        activation(output->array,outsize);
+        const size_t outsize = outrows * outcols;
+        printf("inside k2c_dense %d \r\n", __LINE__);
+        k2c_affine_matmul(output->array, input->array, kernel->array, bias->array,
+                          outrows, outcols, innerdim);
+        activation(output->array, outsize);
+        printf("inside k2c_dense %d \r\n", __LINE__);
     }
-    else {
-        const size_t axesA[1] = {input->ndim-1};
+    else
+    {
+        printf("inside k2c_dense %d \r\n", __LINE__);
+        const size_t axesA[1] = {input->ndim - 1};
         const size_t axesB[1] = {0};
         const size_t naxes = 1;
         const int normalize = 0;
-
+        printf("inside k2c_dense %d \r\n", __LINE__);
         k2c_dot(output, input, kernel, axesA, axesB, naxes, normalize, fwork);
         k2c_bias_add(output, bias);
         activation(output->array, output->numel);
+        printf("inside k2c_dense %d \r\n", __LINE__);
     }
 }
-
 
 /**
  * Flatten Layer.
@@ -61,10 +69,12 @@ void k2c_dense(k2c_tensor* output, const k2c_tensor* input, const k2c_tensor* ke
  * :param input: input tensor.
  * :param kernel: kernel tensor.
  */
-void k2c_flatten(k2c_tensor *output, const k2c_tensor* input) {
+void k2c_flatten(k2c_tensor *output, const k2c_tensor *input)
+{
 
-    memcpy(output->array, input->array, input->numel*sizeof(input->array[0]));
-    for (size_t i=0; i<input->ndim; ++i) {
+    memcpy(output->array, input->array, input->numel * sizeof(input->array[0]));
+    for (size_t i = 0; i < input->ndim; ++i)
+    {
         output->shape[i] = 1;
     }
     output->shape[0] = input->numel;
@@ -81,17 +91,18 @@ void k2c_flatten(k2c_tensor *output, const k2c_tensor* input) {
  * :param newshp: array[newndim] of the desired new shape.
  * :param newndim: number of dimensions after reshaping.
  */
-void k2c_reshape(k2c_tensor *output, const k2c_tensor* input, const size_t * newshp,
-                 const size_t newndim) {
+void k2c_reshape(k2c_tensor *output, const k2c_tensor *input, const size_t *newshp,
+                 const size_t newndim)
+{
 
-    memcpy(output->array, input->array, input->numel*sizeof(input->array[0]));
-    for (size_t i=0; i<newndim; ++i) {
+    memcpy(output->array, input->array, input->numel * sizeof(input->array[0]));
+    for (size_t i = 0; i < newndim; ++i)
+    {
         output->shape[i] = newshp[i];
     }
     output->ndim = newndim;
     output->numel = input->numel;
 }
-
 
 /**
  * Permute Layer.
@@ -101,32 +112,36 @@ void k2c_reshape(k2c_tensor *output, const k2c_tensor* input, const size_t * new
  * :param input: input tensor.
  * :param permute: array[ndim] Permutation pattern. Indexing starts at 0. For instance, (1, 0) permutes the first and second dimension of the input.
  */
-void k2c_permute_dims(k2c_tensor* output, const k2c_tensor* input,
-                      const size_t * permute) {
+void k2c_permute_dims(k2c_tensor *output, const k2c_tensor *input,
+                      const size_t *permute)
+{
 
     size_t Asub[K2C_MAX_NDIM];
     size_t Bsub[K2C_MAX_NDIM];
     size_t newshp[K2C_MAX_NDIM];
     size_t oldshp[K2C_MAX_NDIM];
     const size_t ndim = input->ndim;
-    size_t bidx=0;
-    for (size_t i=0; i<ndim; ++i) {
+    size_t bidx = 0;
+    for (size_t i = 0; i < ndim; ++i)
+    {
         oldshp[i] = input->shape[i];
     }
-    for (size_t i=0; i<ndim; ++i) {
+    for (size_t i = 0; i < ndim; ++i)
+    {
         newshp[i] = oldshp[permute[i]];
     }
 
-    for (size_t i=0; i<input->numel; ++i) {
-        k2c_idx2sub(i,Asub,oldshp,ndim);
-        for (size_t j=0; j<ndim; ++j) {
+    for (size_t i = 0; i < input->numel; ++i)
+    {
+        k2c_idx2sub(i, Asub, oldshp, ndim);
+        for (size_t j = 0; j < ndim; ++j)
+        {
             Bsub[j] = Asub[permute[j]];
         }
-        bidx = k2c_sub2idx(Bsub,newshp,ndim);
+        bidx = k2c_sub2idx(Bsub, newshp, ndim);
         output->array[bidx] = input->array[i];
     }
 }
-
 
 /**
  * Repeat Vector Layer.
@@ -136,12 +151,15 @@ void k2c_permute_dims(k2c_tensor* output, const k2c_tensor* input,
  * :param input: input tensor.
  * :param n: repetition factor.
  */
-void k2c_repeat_vector(k2c_tensor* output, const k2c_tensor* input, const size_t n) {
+void k2c_repeat_vector(k2c_tensor *output, const k2c_tensor *input, const size_t n)
+{
 
     const size_t in_width = input->shape[0];
-    for (size_t i=0; i<n; ++i) {
-        for(size_t j=0; j<in_width; ++j) {
-            output->array[i*in_width + j] = input->array[j];
+    for (size_t i = 0; i < n; ++i)
+    {
+        for (size_t j = 0; j < in_width; ++j)
+        {
+            output->array[i * in_width + j] = input->array[j];
         }
     }
 }
