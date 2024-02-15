@@ -30,29 +30,26 @@ void model(k2c_tensor *input_1_input, k2c_tensor *dense_output, float *conv2d_ou
 	k2c_tensor flatten_output = {flatten_output_array, 1, 1600, {1600, 1, 1, 1, 1}};
 	k2c_tensor dense_kernel = {dense_kernel_array, 2, 16000, {1600, 10, 1, 1, 1}};
 	k2c_tensor dense_bias = {dense_bias_array, 1, 10, {10, 1, 1, 1, 1}};
-	//float dense_fwork[17600] = {0};
+	// float dense_fwork[17600] = {0};
 
 	float *dense_fwork = (float *)malloc(17600 * sizeof(float));
 
-	printf("inside model init done \r\n");
-
 	k2c_conv2d(&conv2d_output, input_1_input, &conv2d_kernel,
 			   &conv2d_bias, conv2d_stride, conv2d_dilation, k2c_relu);
-	printf("inside model %d \r\n", __LINE__);
+
 	k2c_maxpool2d(&max_pooling2d_output, &conv2d_output, max_pooling2d_pool_size,
 				  max_pooling2d_stride);
-	printf("inside model %d \r\n", __LINE__);
+
 	k2c_conv2d(&conv2d_1_output, &max_pooling2d_output, &conv2d_1_kernel,
 			   &conv2d_1_bias, conv2d_1_stride, conv2d_1_dilation, k2c_relu);
-	printf("inside model %d \r\n", __LINE__);
+
 	k2c_maxpool2d(&max_pooling2d_1_output, &conv2d_1_output, max_pooling2d_1_pool_size,
 				  max_pooling2d_1_stride);
-	printf("inside model %d \r\n", __LINE__);
+
 	k2c_flatten(&flatten_output, &max_pooling2d_1_output);
-	printf("inside model %d \r\n", __LINE__);
+
 	k2c_dense(dense_output, &flatten_output, &dense_kernel,
 			  &dense_bias, k2c_softmax, dense_fwork);
-	printf("inside model %d \r\n", __LINE__);
 }
 
 void model_initialize(float **conv2d_output_array, float **conv2d_kernel_array, float **conv2d_bias_array, float **max_pooling2d_output_array, float **conv2d_1_output_array, float **conv2d_1_kernel_array, float **conv2d_1_bias_array, float **max_pooling2d_1_output_array, float **flatten_output_array, float **dense_kernel_array, float **dense_bias_array)

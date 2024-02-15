@@ -1,8 +1,10 @@
 cmake_minimum_required(VERSION 3.0..4.0)
 project(ProjetSimple C)
-include_directories(include)
-set(CMAKE_CXX_FLAGS "${CMAKE_C_FLAGS} -std=c99 -Wall -lstdc++ -lm")
+
+set(CMAKE_CXX_FLAGS "${CMAKE_C_FLAGS} -std=c99 -Wall -lstdc++ -lm -lSDL2main -lSDL2 ")
+find_package(SDL REQUIRED)
+include_directories(include ${SDL_INCLUDE_DIRS})
 # file(GLOB_RECURSE SRC_FILES ./*.c)
 file(GLOB SRC_FILES ./*.c ./include/*.c)
 add_executable(aaa ${SRC_FILES})
-target_link_libraries(aaa m)
+target_link_libraries(aaa m ${SDL_LIBRARIES}) 

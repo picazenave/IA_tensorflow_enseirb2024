@@ -28,7 +28,7 @@ void k2c_dense(k2c_tensor *output, const k2c_tensor *input, const k2c_tensor *ke
     if (input->ndim <= 2)
     {
         size_t outrows;
-        printf("inside k2c_dense %d \r\n", __LINE__);
+
         if (input->ndim > 1)
         {
             outrows = input->shape[0];
@@ -40,24 +40,24 @@ void k2c_dense(k2c_tensor *output, const k2c_tensor *input, const k2c_tensor *ke
         const size_t outcols = kernel->shape[1];
         const size_t innerdim = kernel->shape[0];
         const size_t outsize = outrows * outcols;
-        printf("inside k2c_dense %d \r\n", __LINE__);
+
         k2c_affine_matmul(output->array, input->array, kernel->array, bias->array,
                           outrows, outcols, innerdim);
         activation(output->array, outsize);
-        printf("inside k2c_dense %d \r\n", __LINE__);
+
     }
     else
     {
-        printf("inside k2c_dense %d \r\n", __LINE__);
+
         const size_t axesA[1] = {input->ndim - 1};
         const size_t axesB[1] = {0};
         const size_t naxes = 1;
         const int normalize = 0;
-        printf("inside k2c_dense %d \r\n", __LINE__);
+
         k2c_dot(output, input, kernel, axesA, axesB, naxes, normalize, fwork);
         k2c_bias_add(output, bias);
         activation(output->array, output->numel);
-        printf("inside k2c_dense %d \r\n", __LINE__);
+
     }
 }
 

@@ -1,7 +1,7 @@
 /*******************************************************
 Nom ......... : Bmp2Matrix.h
-Role ........ : Permet la conversion et la lecture des
-                images bitmap
+Role ........ : librairie permettant la lecture,
+                l'écriture et l'affichage des bitmaps
 Auteur ...... : Frédéric CHATRIE
 Version ..... : V1.1 du 1/2/2021
 Licence ..... : /
@@ -12,6 +12,9 @@ Pour exécuter, tapez : /
 
 #ifndef BMP2MATRIX_H
 #define BMP2MATRIX_H
+
+
+#include <stdio.h>
 
 typedef struct{
 char signature[3];            //Signature "BM"
@@ -56,6 +59,18 @@ void LireBitmap(FILE* pFichier,BMP* pBitmap);
 long LireHeaderBitmap(FILE* pFichier,BMP* pBitmap);
 void LireInfoHeaderBitmap(FILE* pFichier,BMP* pBitmap,long curseur);
 void LirePixelsBitmap(FILE* pFichier,BMP* pBitmap);
+
+void EcrireBitmap(FILE* pFichier,BMP* pBitmap);
+long EcrireHeaderBitmap(FILE* pFichier,BMP* pBitmap);
+void EcrireInfoHeaderBitmap(FILE* pFichier,BMP* pBitmap,long curseur);
+void EcrirePixelsBitmap(FILE* pFichier,BMP* pBitmap);
+
+void AfficherBitmap(BMP bitmap);
+void AfficherBitmapGray(BMP bitmap);
+void AfficherHeaderBitmap(BMP bitmap);
+void AfficherInfoHeaderBitmap(BMP bitmap);
+void AfficherPixelsBitmap(BMP bitmap);
+void AfficherPixelsBitmapGray(BMP bitmap);
 
 void ConvertRGB2Gray(BMP* pBitmap);
 

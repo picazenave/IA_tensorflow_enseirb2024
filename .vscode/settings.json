@@ -1,0 +1,7 @@
+{
+    "files.associations": {
+        "bmp2matrix.h": "c",
+        "traitementimage.h": "c",
+        "stdlib.h": "c"
+    }
+}
