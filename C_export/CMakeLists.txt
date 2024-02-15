@@ -1,0 +1,6 @@
+cmake_minimum_required(VERSION 3.0..4.0)
+project(ProjetSimple C)
+include_directories(include)
+set(CMAKE_CXX_FLAGS "${CMAKE_C_FLAGS} -std=c99 -Wall")
+file(GLOB_RECURSE SRC_FILES ./*.c)
+add_executable(aaa ${SRC_FILES})
