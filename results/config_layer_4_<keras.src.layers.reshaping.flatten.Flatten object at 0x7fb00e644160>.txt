@@ -1,1 +1,1 @@
-{'name': 'flatten', 'trainable': True, 'dtype': 'float32', 'data_format': 'channels_last'}
+{'name': 'flatten', 'trainable': True, 'dtype': 'float32', 'data_format': 'channels_last'}{'name': 'flatten', 'trainable': True, 'dtype': 'float32', 'data_format': 'channels_last'}{'name': 'flatten', 'trainable': True, 'dtype': 'float32', 'data_format': 'channels_last'}{'name': 'flatten', 'trainable': True, 'dtype': 'float32', 'data_format': 'channels_last'}{'name': 'flatten', 'trainable': True, 'dtype': 'float32', 'data_format': 'channels_last'}
