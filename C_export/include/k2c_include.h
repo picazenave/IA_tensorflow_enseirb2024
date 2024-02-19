@@ -13,16 +13,16 @@ https://github.com/f0uriest/keras2c
 
 
 // Activations
-void k2c_linear_func(float * x, const size_t size);
-void k2c_exponential_func(float * x, const size_t size);
-void k2c_relu_func(float * x, const size_t size);
-void k2c_hard_sigmoid_func(float * x, const size_t size);
-void k2c_tanh_func(float * x, const size_t size);
-void k2c_sigmoid_func(float * x, const size_t size);
-void k2c_softmax_func(float * x, const size_t size);
-void k2c_softplus_func(float * x, const size_t size);
-void k2c_softsign_func(float * x, const size_t size);
-typedef void k2c_activationType(float * x, const size_t size);
+void k2c_linear_func(double * x, const size_t size);
+void k2c_exponential_func(double * x, const size_t size);
+void k2c_relu_func(double * x, const size_t size);
+void k2c_hard_sigmoid_func(double * x, const size_t size);
+void k2c_tanh_func(double * x, const size_t size);
+void k2c_sigmoid_func(double * x, const size_t size);
+void k2c_softmax_func(double * x, const size_t size);
+void k2c_softplus_func(double * x, const size_t size);
+void k2c_softsign_func(double * x, const size_t size);
+typedef void k2c_activationType(double * x, const size_t size);
 extern k2c_activationType * k2c_linear;
 extern k2c_activationType * k2c_exponential;
 extern k2c_activationType * k2c_relu;
@@ -34,19 +34,19 @@ extern k2c_activationType * k2c_softplus;
 extern k2c_activationType * k2c_softsign;
 
 // Advanced Activations
-void k2c_LeakyReLU(float * x, const size_t size, const float alpha);
-void k2c_PReLU(float * x, const size_t size, const float * alpha);
-void k2c_ELU(float * x, const size_t size, const float alpha);
-void k2c_ThresholdedReLU(float * x, const size_t size, const float theta);
-void k2c_ReLU(float * x, const size_t size, const float max_value, const float negative_slope,
-              const float threshold);
+void k2c_LeakyReLU(double * x, const size_t size, const double alpha);
+void k2c_PReLU(double * x, const size_t size, const double * alpha);
+void k2c_ELU(double * x, const size_t size, const double alpha);
+void k2c_ThresholdedReLU(double * x, const size_t size, const double theta);
+void k2c_ReLU(double * x, const size_t size, const double max_value, const double negative_slope,
+              const double threshold);
 
 // Convolutions
-void k2c_pad1d(k2c_tensor* output, const k2c_tensor* input, const float fill,
+void k2c_pad1d(k2c_tensor* output, const k2c_tensor* input, const double fill,
                const size_t * pad);
-void k2c_pad2d(k2c_tensor* output, const k2c_tensor* input, const float fill,
+void k2c_pad2d(k2c_tensor* output, const k2c_tensor* input, const double fill,
                const size_t * pad);
-void k2c_pad3d(k2c_tensor* output, const k2c_tensor* input, const float fill,
+void k2c_pad3d(k2c_tensor* output, const k2c_tensor* input, const double fill,
                const size_t * pad);
 void k2c_conv1d(k2c_tensor* output, const k2c_tensor* input, const k2c_tensor* kernel,
                 const k2c_tensor* bias, const size_t stride, const size_t dilation,
@@ -66,7 +66,7 @@ void k2c_upsampling3d(k2c_tensor* output, const k2c_tensor* input, const size_t 
 
 // Core Layers
 void k2c_dense(k2c_tensor* output, const k2c_tensor* input, const k2c_tensor* kernel,
-               const k2c_tensor* bias, k2c_activationType *activation, float * fwork);
+               const k2c_tensor* bias, k2c_activationType *activation, double * fwork);
 void k2c_flatten(k2c_tensor *output, const k2c_tensor* input);
 void k2c_reshape(k2c_tensor *output, const k2c_tensor* input, const size_t * newshp,
                  const size_t newndim);
@@ -78,17 +78,17 @@ void k2c_repeat_vector(k2c_tensor* output, const k2c_tensor* input, const size_t
 void k2c_embedding(k2c_tensor* outputs, const k2c_tensor* inputs, const k2c_tensor* kernel);
 
 // Helper functions
-void k2c_matmul(float * C, const float * A, const float * B, const size_t outrows,
+void k2c_matmul(double * C, const double * A, const double * B, const size_t outrows,
                 const size_t outcols, const size_t innerdim);
-void k2c_affine_matmul(float * C, const float * A, const float * B, const float * d,
+void k2c_affine_matmul(double * C, const double * A, const double * B, const double * d,
                        const size_t outrows,const size_t outcols, const size_t innerdim);
 size_t k2c_sub2idx(const size_t * sub, const size_t * shape, const size_t ndim);
 void k2c_idx2sub(const size_t idx, size_t * sub, const size_t * shape, const size_t ndim);
 void k2c_dot(k2c_tensor* C, const k2c_tensor* A, const k2c_tensor* B, const size_t * axesA,
-             const size_t * axesB, const size_t naxes, const int normalize, float * fwork);
+             const size_t * axesB, const size_t naxes, const int normalize, double * fwork);
 void k2c_bias_add(k2c_tensor* A, const k2c_tensor* b);
 void k2c_flip(k2c_tensor *A, const size_t axis);
-float* k2c_read_array(const char* filename, const size_t array_size);
+double* k2c_read_array(const char* filename, const size_t array_size);
 
 // Merge layers
 void k2c_add(k2c_tensor* output, const size_t num_tensors,...);
@@ -118,29 +118,29 @@ void k2c_avgpool2d(k2c_tensor* output, const k2c_tensor* input, const size_t * p
                    const size_t * stride);
 
 // Recurrent layers
-void k2c_lstmcell(float * state, const float * input, const k2c_tensor* kernel,
-                  const k2c_tensor* recurrent_kernel, const k2c_tensor* bias, float * fwork,
+void k2c_lstmcell(double * state, const double * input, const k2c_tensor* kernel,
+                  const k2c_tensor* recurrent_kernel, const k2c_tensor* bias, double * fwork,
                   k2c_activationType *recurrent_activation,
                   k2c_activationType *output_activation);
-void k2c_lstm(k2c_tensor* output, const k2c_tensor* input, float * state,
+void k2c_lstm(k2c_tensor* output, const k2c_tensor* input, double * state,
               const k2c_tensor* kernel, const k2c_tensor* recurrent_kernel,
-              const k2c_tensor* bias, float * fwork, const int go_backwards,
+              const k2c_tensor* bias, double * fwork, const int go_backwards,
               const int return_sequences, k2c_activationType *recurrent_activation,
               k2c_activationType *output_activation);
-void k2c_simpleRNNcell(float * state, const float * input, const k2c_tensor* kernel,
+void k2c_simpleRNNcell(double * state, const double * input, const k2c_tensor* kernel,
                        const k2c_tensor* recurrent_kernel, const k2c_tensor* bias,
-                       float * fwork, k2c_activationType *output_activation);
-void k2c_simpleRNN(k2c_tensor* output, const k2c_tensor* input, float * state,
+                       double * fwork, k2c_activationType *output_activation);
+void k2c_simpleRNN(k2c_tensor* output, const k2c_tensor* input, double * state,
                    const k2c_tensor* kernel, const k2c_tensor* recurrent_kernel,
-                   const k2c_tensor* bias, float * fwork, const int go_backwards,
+                   const k2c_tensor* bias, double * fwork, const int go_backwards,
                    const int return_sequences, k2c_activationType *output_activation);
-void k2c_grucell(float * state, const float * input, const k2c_tensor* kernel,
-                 const k2c_tensor* recurrent_kernel, const k2c_tensor* bias, float * fwork,
+void k2c_grucell(double * state, const double * input, const k2c_tensor* kernel,
+                 const k2c_tensor* recurrent_kernel, const k2c_tensor* bias, double * fwork,
                  const int reset_after, k2c_activationType *recurrent_activation,
                  k2c_activationType *output_activation);
-void k2c_gru(k2c_tensor* output, const k2c_tensor* input, float * state,
+void k2c_gru(k2c_tensor* output, const k2c_tensor* input, double * state,
              const k2c_tensor* kernel, const k2c_tensor* recurrent_kernel,
-             const k2c_tensor* bias, float * fwork, const int reset_after,
+             const k2c_tensor* bias, double * fwork, const int reset_after,
              const int go_backwards, const int return_sequences,
              k2c_activationType *recurrent_activation,
              k2c_activationType *output_activation);

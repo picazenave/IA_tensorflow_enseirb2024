@@ -21,7 +21,7 @@ https://github.com/f0uriest/keras2c
  * :param fill: value to fill in padded areas.
  * :param pad: array[2] of how many rows to pad. Order is {before dim 1, after dim 1}.
  */
-void k2c_pad1d(k2c_tensor* output, const k2c_tensor* input, const float fill,
+void k2c_pad1d(k2c_tensor* output, const k2c_tensor* input, const double fill,
                const size_t * pad) {
 
     const size_t in_width = input->shape[1];
@@ -53,7 +53,7 @@ void k2c_pad1d(k2c_tensor* output, const k2c_tensor* input, const float fill,
  * :param fill: value to fill in padded areas.
  * :param pad: array[4] of how many rows/cols to pad. Order is {before dim 1, after dim 1, before dim 2, after dim 2}.
  */
-void k2c_pad2d(k2c_tensor* output, const k2c_tensor* input, const float fill,
+void k2c_pad2d(k2c_tensor* output, const k2c_tensor* input, const double fill,
                const size_t * pad) {
 
     const size_t in_height = input->shape[0];
@@ -95,7 +95,7 @@ void k2c_pad2d(k2c_tensor* output, const k2c_tensor* input, const float fill,
  * :param fill: value to fill in padded areas.
  * :param pad: array[6] of how many rows/cols to pad. Order is {before dim 1, after dim 1, before dim 2, after dim 2, before dim 3, after dim 3}.
  */
-void k2c_pad3d(k2c_tensor* output, const k2c_tensor* input, const float fill,
+void k2c_pad3d(k2c_tensor* output, const k2c_tensor* input, const double fill,
                const size_t * pad) {
 
     const size_t dim1 = input->shape[0];

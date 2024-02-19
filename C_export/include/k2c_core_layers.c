@@ -22,7 +22,7 @@ https://github.com/f0uriest/keras2c
  * :param fwork: array of working space, size(fwork) = size(input) + size(kernel)
  */
 void k2c_dense(k2c_tensor *output, const k2c_tensor *input, const k2c_tensor *kernel,
-               const k2c_tensor *bias, k2c_activationType *activation, float *fwork)
+               const k2c_tensor *bias, k2c_activationType *activation, double *fwork)
 {
 
     if (input->ndim <= 2)

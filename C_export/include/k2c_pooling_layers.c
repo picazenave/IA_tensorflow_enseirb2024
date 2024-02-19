@@ -47,7 +47,7 @@ void k2c_global_avg_pooling(k2c_tensor* output, const k2c_tensor* input) {
 
     const size_t in_chan = input->shape[input->ndim-1];
     memset(output->array,0,output->numel*sizeof(input->array[0]));
-    const float num_inv = 1.0f/(input->numel/in_chan);
+    const double num_inv = 1.0f/(input->numel/in_chan);
 
     for (size_t i=0; i<input->numel; i+=in_chan) {
         for (size_t j=0; j<in_chan; ++j) {
@@ -139,7 +139,7 @@ void k2c_avgpool1d(k2c_tensor* output, const k2c_tensor* input, const size_t poo
                     ++count;
                 }
             }
-            output->array[i+j] /= (float)count;
+            output->array[i+j] /= (double)count;
         }
     }
 }
@@ -174,7 +174,7 @@ void k2c_avgpool2d(k2c_tensor* output, const k2c_tensor* input, const size_t * p
                         }
                     }
                 }
-                output->array[l+j+i] /= (float)count;
+                output->array[l+j+i] /= (double)count;
             }
         }
     }

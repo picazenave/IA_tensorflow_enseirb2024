@@ -58,6 +58,22 @@ int main(int argc, char *argv[])
     // LireBitmap(pFichier, &bitmap);
     // fclose(pFichier); // Fermeture du fichier contenant l'image
 
+    int output_size = 10;
+    double *output_tensor_array = (double *)malloc(output_size * sizeof(double));
+    k2c_tensor output_tensor = {output_tensor_array, 1, output_size, {output_size, 1, 1, 1, 1}};
+    double *conv2d_output_array;
+    double *conv2d_kernel_array;
+    double *conv2d_bias_array;
+    double *max_pooling2d_output_array;
+    double *conv2d_1_output_array;
+    double *conv2d_1_kernel_array;
+    double *conv2d_1_bias_array;
+    double *max_pooling2d_1_output_array;
+    double *flatten_output_array;
+    double *dense_kernel_array;
+    double *dense_bias_array;
+    model_initialize(&conv2d_output_array, &conv2d_kernel_array, &conv2d_bias_array, &max_pooling2d_output_array, &conv2d_1_output_array, &conv2d_1_kernel_array, &conv2d_1_bias_array, &max_pooling2d_1_output_array, &flatten_output_array, &dense_kernel_array, &dense_bias_array);
+
     FILE *pFichier;
     BMP bitmap;
     int chiffreDebut = 0, chiffreFin = 9;
@@ -65,14 +81,15 @@ int main(int argc, char *argv[])
     char nomFichierSource[200] = "../bmp_traitee/";
     char filename[200] = {0};
     char nom[200];
-    for (int i = chiffreDebut; i <= chiffreFin; i++)
+
+    for (int chiffre = chiffreDebut; chiffre <= chiffreFin; chiffre++)
     {
-        for (int j = quantiteDebut; j <= quantiteFin; j++)
+        for (int quantite = quantiteDebut; quantite <= quantiteFin; quantite++)
         {
             strcpy(filename, "");
             strcpy(filename, nomFichierSource);
             strcpy(nom, "");
-            sprintf(nom, "%d_%d.bmp", i, j);
+            sprintf(nom, "%d_%d.bmp", chiffre, quantite);
             strcat(filename, nom);
             pFichier = fopen(filename, "rb"); // Ouverture du fichier contenant l'image
             if (pFichier == NULL)
@@ -85,13 +102,23 @@ int main(int argc, char *argv[])
 
             int im_size = bitmap.infoHeader.hauteur * bitmap.infoHeader.largeur;
             printf("bitmap(l/h):%d/%d;im_size=%d\n", bitmap.infoHeader.largeur, bitmap.infoHeader.hauteur, im_size);
-            float *bitmap_div = (float *)malloc(im_size * sizeof(float));
-            for (int i = 0; i < im_size; i++)
+            double *bitmap_div = (double *)malloc(im_size * sizeof(double));
+            int width, height;
+            width = bitmap.infoHeader.largeur;
+            height = bitmap.infoHeader.hauteur;
+            for (int col = 0; col < width; col++)
             {
-                int j = (int)(i / bitmap.infoHeader.largeur);
-                // printf("bitmap(i/j):%d/%d []=%f\n",i-j*bitmap.infoHeader.largeur,j,bitmap.mPixelsGray[i-j*bitmap.infoHeader.largeur][j] / 255.f);
-                bitmap_div[i] = bitmap.mPixelsGray[i - j * bitmap.infoHeader.largeur][j] / 255.f;
+                for (int row = 0; row < height; row++)
+                {
+                    bitmap_div[width * row + col] = (double)((double)bitmap.mPixelsGray[row][col] / 255.f);
+                }
             }
+            // for (int i = 0; i < im_size; i++)
+            // {
+            //     int j = (int)(i / width);
+            //     // printf("bitmap(i/j):%d/%d []=%f\n",i-j*bitmap.infoHeader.largeur,j,bitmap.mPixelsGray[i-j*bitmap.infoHeader.largeur][j] / 255.f);
+            //     bitmap_div[i] = (double)((double)bitmap.mPixelsGray[j][i - j * height] / 255.f);
+            // }
             k2c_tensor img_tensor = {.array = bitmap_div,
                                      .ndim = 2,
                                      .numel = bitmap.infoHeader.hauteur * bitmap.infoHeader.largeur,
@@ -101,43 +128,48 @@ int main(int argc, char *argv[])
             //                          .ndim = 2,
             //                          .numel = 784,
             //                          .shape = {28,28, 1, 1, 1}};
-            int output_size = 10;
-            float *output_tensor_array = (float *)malloc(output_size * sizeof(float));
-            k2c_tensor output_tensor = {output_tensor_array, 1, output_size, {output_size, 1, 1, 1, 1}};
-            float *conv2d_output_array;
-            float *conv2d_kernel_array;
-            float *conv2d_bias_array;
-            float *max_pooling2d_output_array;
-            float *conv2d_1_output_array;
-            float *conv2d_1_kernel_array;
-            float *conv2d_1_bias_array;
-            float *max_pooling2d_1_output_array;
-            float *flatten_output_array;
-            float *dense_kernel_array;
-            float *dense_bias_array;
-            model_initialize(&conv2d_output_array, &conv2d_kernel_array, &conv2d_bias_array, &max_pooling2d_output_array, &conv2d_1_output_array, &conv2d_1_kernel_array, &conv2d_1_bias_array, &max_pooling2d_1_output_array, &flatten_output_array, &dense_kernel_array, &dense_bias_array);
 
             model(&img_tensor, &output_tensor, conv2d_output_array, conv2d_kernel_array, conv2d_bias_array, max_pooling2d_output_array, conv2d_1_output_array, conv2d_1_kernel_array, conv2d_1_bias_array, max_pooling2d_1_output_array, flatten_output_array, dense_kernel_array, dense_bias_array);
 
             printf("Prediction (%s)=", filename);
+            int index_local_max = 0;
+            double temp = 0;
             for (int i = 0; i < output_size; i++)
             {
-                printf("   %02d   ||", i);
+                if (output_tensor.array[i] > temp)
+                {
+                    temp = output_tensor.array[i];
+                    index_local_max = i;
+                }
+            }
+            for (int i = 0; i < output_size; i++)
+            {
+                if (i == chiffre)
+                    printf("   %02d   ||", i);
+                else if (i == index_local_max)
+                    printf(RED "   %02d   ||" RESET, i);
+                else
+                    printf(YEL "   %02d   ||" RESET, i);
             }
             printf("\r\n");
             printf("Results    (%s)=", filename);
             for (int i = 0; i < output_size; i++)
             {
-                printf(" %.4f ||", output_tensor.array[i]);
+                if (i == chiffre)
+                    printf(" %.4f ||", output_tensor.array[i]);
+                else if (i == index_local_max)
+                    printf(RED " %.4f ||" RESET, output_tensor.array[i]);
+                else
+                    printf(YEL " %.4f ||" RESET, output_tensor.array[i]);
             }
-            printf("\r\n");
             printf("\r\n=====================\r\n");
 
             DesallouerBMP(&bitmap);
-            model_terminate(conv2d_output_array, conv2d_kernel_array, conv2d_bias_array, max_pooling2d_output_array, conv2d_1_output_array, conv2d_1_kernel_array, conv2d_1_bias_array, max_pooling2d_1_output_array, flatten_output_array, dense_kernel_array, dense_bias_array);
             free(bitmap_div);
-            free(output_tensor_array);
         }
     }
+
+    free(output_tensor_array);
+    model_terminate(conv2d_output_array, conv2d_kernel_array, conv2d_bias_array, max_pooling2d_output_array, conv2d_1_output_array, conv2d_1_kernel_array, conv2d_1_bias_array, max_pooling2d_1_output_array, flatten_output_array, dense_kernel_array, dense_bias_array);
     return 0;
 }

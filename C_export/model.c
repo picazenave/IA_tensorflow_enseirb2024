@@ -4,7 +4,7 @@
 #include "./include/k2c_include.h"
 #include "./include/k2c_tensor_include.h"
 
-void model(k2c_tensor *input_1_input, k2c_tensor *dense_output, float *conv2d_output_array, float *conv2d_kernel_array, float *conv2d_bias_array, float *max_pooling2d_output_array, float *conv2d_1_output_array, float *conv2d_1_kernel_array, float *conv2d_1_bias_array, float *max_pooling2d_1_output_array, float *flatten_output_array, float *dense_kernel_array, float *dense_bias_array)
+void model(k2c_tensor *input_1_input, k2c_tensor *dense_output, double *conv2d_output_array, double *conv2d_kernel_array, double *conv2d_bias_array, double *max_pooling2d_output_array, double *conv2d_1_output_array, double *conv2d_1_kernel_array, double *conv2d_1_bias_array, double *max_pooling2d_1_output_array, double *flatten_output_array, double *dense_kernel_array, double *dense_bias_array)
 {
 
 	size_t conv2d_stride[2] = {1, 1};
@@ -30,9 +30,9 @@ void model(k2c_tensor *input_1_input, k2c_tensor *dense_output, float *conv2d_ou
 	k2c_tensor flatten_output = {flatten_output_array, 1, 1600, {1600, 1, 1, 1, 1}};
 	k2c_tensor dense_kernel = {dense_kernel_array, 2, 16000, {1600, 10, 1, 1, 1}};
 	k2c_tensor dense_bias = {dense_bias_array, 1, 10, {10, 1, 1, 1, 1}};
-	// float dense_fwork[17600] = {0};
+	// double dense_fwork[17600] = {0};
 
-	float *dense_fwork = (float *)malloc(17600 * sizeof(float));
+	double *dense_fwork = (double *)malloc(17600 * sizeof(double));
 
 	k2c_conv2d(&conv2d_output, input_1_input, &conv2d_kernel,
 			   &conv2d_bias, conv2d_stride, conv2d_dilation, k2c_relu);
@@ -50,25 +50,35 @@ void model(k2c_tensor *input_1_input, k2c_tensor *dense_output, float *conv2d_ou
 
 	k2c_dense(dense_output, &flatten_output, &dense_kernel,
 			  &dense_bias, k2c_softmax, dense_fwork);
+	free(dense_fwork);
 }
 
-void model_initialize(float **conv2d_output_array, float **conv2d_kernel_array, float **conv2d_bias_array, float **max_pooling2d_output_array, float **conv2d_1_output_array, float **conv2d_1_kernel_array, float **conv2d_1_bias_array, float **max_pooling2d_1_output_array, float **flatten_output_array, float **dense_kernel_array, float **dense_bias_array)
+void model_initialize(double **conv2d_output_array, double **conv2d_kernel_array, double **conv2d_bias_array, double **max_pooling2d_output_array, double **conv2d_1_output_array, double **conv2d_1_kernel_array, double **conv2d_1_bias_array, double **max_pooling2d_1_output_array, double **flatten_output_array, double **dense_kernel_array, double **dense_bias_array)
 {
-
-	*conv2d_output_array = k2c_read_array("modelconv2d_output_array.csv", 21632);
-	*conv2d_kernel_array = k2c_read_array("modelconv2d_kernel_array.csv", 288);
-	*conv2d_bias_array = k2c_read_array("modelconv2d_bias_array.csv", 32);
-	*max_pooling2d_output_array = k2c_read_array("modelmax_pooling2d_output_array.csv", 5408);
-	*conv2d_1_output_array = k2c_read_array("modelconv2d_1_output_array.csv", 7744);
-	*conv2d_1_kernel_array = k2c_read_array("modelconv2d_1_kernel_array.csv", 18432);
-	*conv2d_1_bias_array = k2c_read_array("modelconv2d_1_bias_array.csv", 64);
-	*max_pooling2d_1_output_array = k2c_read_array("modelmax_pooling2d_1_output_array.csv", 1600);
-	*flatten_output_array = k2c_read_array("modelflatten_output_array.csv", 1600);
-	*dense_kernel_array = k2c_read_array("modeldense_kernel_array.csv", 16000);
-	*dense_bias_array = k2c_read_array("modeldense_bias_array.csv", 10);
+	*conv2d_output_array = (double*) malloc(21632 * sizeof(double));
+	memset(*conv2d_output_array,0,21632);
+    // *conv2d_output_array = k2c_read_array("model_v2conv2d_output_array.csv",21632);
+    *conv2d_kernel_array = k2c_read_array("model_v2conv2d_kernel_array.csv",288);
+    *conv2d_bias_array = k2c_read_array("model_v2conv2d_bias_array.csv",32);
+	*max_pooling2d_output_array = (double*) malloc(5408 * sizeof(double));
+	memset(*max_pooling2d_output_array,0,5408);
+    // *max_pooling2d_output_array = k2c_read_array("model_v2max_pooling2d_output_array.csv",5408);
+	*conv2d_1_output_array = (double*) malloc(7744 * sizeof(double));
+	memset(*conv2d_1_output_array,0,7744);
+    // *conv2d_1_output_array = k2c_read_array("model_v2conv2d_1_output_array.csv",7744);
+    *conv2d_1_kernel_array = k2c_read_array("model_v2conv2d_1_kernel_array.csv",18432);
+    *conv2d_1_bias_array = k2c_read_array("model_v2conv2d_1_bias_array.csv",64);
+	*max_pooling2d_1_output_array = (double*) malloc(1600 * sizeof(double));
+	memset(*max_pooling2d_1_output_array,0,1600);
+    // *max_pooling2d_1_output_array = k2c_read_array("model_v2max_pooling2d_1_output_array.csv",1600);
+	*flatten_output_array = (double*) malloc(1600 * sizeof(double));
+	memset(*flatten_output_array,0,1600);
+    // *flatten_output_array = k2c_read_array("model_v2flatten_output_array.csv",1600);
+    *dense_kernel_array = k2c_read_array("model_v2dense_kernel_array.csv",16000);
+    *dense_bias_array = k2c_read_array("model_v2dense_bias_array.csv",10);
 }
 
-void model_terminate(float *conv2d_output_array, float *conv2d_kernel_array, float *conv2d_bias_array, float *max_pooling2d_output_array, float *conv2d_1_output_array, float *conv2d_1_kernel_array, float *conv2d_1_bias_array, float *max_pooling2d_1_output_array, float *flatten_output_array, float *dense_kernel_array, float *dense_bias_array)
+void model_terminate(double *conv2d_output_array, double *conv2d_kernel_array, double *conv2d_bias_array, double *max_pooling2d_output_array, double *conv2d_1_output_array, double *conv2d_1_kernel_array, double *conv2d_1_bias_array, double *max_pooling2d_1_output_array, double *flatten_output_array, double *dense_kernel_array, double *dense_bias_array)
 {
 
 	free(conv2d_output_array);
