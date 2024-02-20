@@ -21,22 +21,22 @@ using namespace std;
 
 int main(int argc, char *argv[])
 {
-    BMP bitmap;
-    FILE *pFichier = NULL;
-    char filename[] = "../bmp_traitee/1_0.bmp";
-    pFichier = fopen(filename, "rb"); // Ouverture du fichier contenant l'image
-    if (pFichier == NULL)
-    {
-        printf("%s\n", filename);
-        printf("Erreur dans la lecture du fichier\n");
-    }
-    LireBitmap(pFichier, &bitmap);
-    fclose(pFichier); // Fermeture du fichier contenant l'image
+    // BMP bitmap;
+    // FILE *pFichier = NULL;
+    // char filename[] = "../bmp_traitee/1_0.bmp";
+    // pFichier = fopen(filename, "rb"); // Ouverture du fichier contenant l'image
+    // if (pFichier == NULL)
+    // {
+    //     printf("%s\n", filename);
+    //     printf("Erreur dans la lecture du fichier\n");
+    // }
+    // LireBitmap(pFichier, &bitmap);
+    // fclose(pFichier); // Fermeture du fichier contenant l'image
 
-    ConvertRGB2Gray(&bitmap);
-    printf("%d\n", bitmap.mPixelsGray[10][10]);
+    // ConvertRGB2Gray(&bitmap);
+    // printf("%d\n", bitmap.mPixelsGray[10][10]);
 
-    printf("aaaa\r\n");
+    // printf("aaaa\r\n");
     if (argc > 1)
     {
         if (strstr(argv[1], "convert"))
@@ -48,30 +48,48 @@ int main(int argc, char *argv[])
             printf("argc=%d; argv[0]=\"%s\"; argv[1]=\"%s\";", argc, argv[0], argv[1]);
     }
 
-    int im_size = bitmap.infoHeader.hauteur * bitmap.infoHeader.largeur;
-    printf("bitmap(l/h):%d/%d;im_size=%d\n", bitmap.infoHeader.largeur, bitmap.infoHeader.hauteur, im_size);
-    uint8_t *bitmap_div = (uint8_t *)malloc(im_size * sizeof(uint8_t));
-    int width, height;
-    width = bitmap.infoHeader.largeur;
-    height = bitmap.infoHeader.hauteur;
-    for (int col = 0; col < width; col++)
-    {
-        for (int row = 0; row < height; row++)
-        {
-            bitmap_div[width * row + col] = bitmap.mPixelsGray[row][col];
-        }
-    }
+    // int im_size = bitmap.infoHeader.hauteur * bitmap.infoHeader.largeur;
+    // printf("bitmap(l/h):%d/%d;im_size=%d\n", bitmap.infoHeader.largeur, bitmap.infoHeader.hauteur, im_size);
+    // uint8_t *bitmap_div = (uint8_t *)malloc(im_size * sizeof(uint8_t));
+    // int width, height;
+    // width = bitmap.infoHeader.largeur;
+    // height = bitmap.infoHeader.hauteur;
+    // for (int col = 0; col < width; col++)
+    // {
+    //     for (int row = 0; row < height; row++)
+    //     {
+    //         bitmap_div[width * row + col] = bitmap.mPixelsGray[row][col];
+    //     }
+    // }
 
-    //  Use the correct scaling, i.e., low and high.
-    const auto input = fdeep::tensor_from_bytes(bitmap_div,
-                                                static_cast<std::size_t>(height),
-                                                static_cast<std::size_t>(width),
-                                                static_cast<std::size_t>(1),
-                                                0.0f, 1.0f);
+    // //  Use the correct scaling, i.e., low and high.
+    // const auto input = fdeep::tensor_from_bytes(bitmap_div,
+    //                                             static_cast<std::size_t>(height),
+    //                                             static_cast<std::size_t>(width),
+    //                                             static_cast<std::size_t>(1),
+    //                                             0.0f, 1.0f);
 
     const auto model = fdeep::load_model("fdeep_model.json");
-    const auto result = model.predict({input});
-    std::cout << fdeep::show_tensors(result) << std::endl;
+    // const auto result = model.predict({input});
+
+    // float results_float[10];
+    // printf("aaaa\r\n");
+    // sscanf(fdeep::show_tensors(result).c_str(),"[[[[[[%f, %f, %f, %f, %f, %f, %f, %f, %f, %f]]]]]]",&results_float[0],&results_float[1],&results_float[2],&results_float[3],&results_float[4],&results_float[5],&results_float[6],&results_float[7],&results_float[8],&results_float[9]);
+    // float local_max;
+    // int i_local_max;
+    // for (int i = 0; i < 10; i++)
+    // {
+    //     printf("for:%d value=%f\r\n",i,results_float[i]);
+    //     float a = results_float[i];
+    //     if (a > local_max)
+    //     {
+    //         local_max = a;
+    //         i_local_max = i;
+    //     }
+    // }
+    // printf("max[%d]=%f\r\n", i_local_max, local_max);
+    // std::cout << fdeep::show_tensors(result) << std::endl;
+
     // BMP bitmap;
     // FILE *pFichier = NULL;
     // char filename[] = "../bmp_traitee/0_0.bmp";
@@ -86,23 +104,10 @@ int main(int argc, char *argv[])
     // LireBitmap(pFichier, &bitmap);
     // fclose(pFichier); // Fermeture du fichier contenant l'image
 
-#if 0
+#if 1
     int output_size = 10;
-    double *output_tensor_array = (double *)malloc(output_size * sizeof(double));
-    k2c_tensor output_tensor = {output_tensor_array, 1, output_size, {output_size, 1, 1, 1, 1}};
-    double *conv2d_output_array;
-    double *conv2d_kernel_array;
-    double *conv2d_bias_array;
-    double *max_pooling2d_output_array;
-    double *conv2d_1_output_array;
-    double *conv2d_1_kernel_array;
-    double *conv2d_1_bias_array;
-    double *max_pooling2d_1_output_array;
-    double *flatten_output_array;
-    double *dense_kernel_array;
-    double *dense_bias_array;
-    model_initialize(&conv2d_output_array, &conv2d_kernel_array, &conv2d_bias_array, &max_pooling2d_output_array, &conv2d_1_output_array, &conv2d_1_kernel_array, &conv2d_1_bias_array, &max_pooling2d_1_output_array, &flatten_output_array, &dense_kernel_array, &dense_bias_array);
-
+    int error = 0;
+    int loop_count = 0;
     FILE *pFichier;
     BMP bitmap;
     int chiffreDebut = 0, chiffreFin = 9;
@@ -113,8 +118,10 @@ int main(int argc, char *argv[])
 
     for (int chiffre = chiffreDebut; chiffre <= chiffreFin; chiffre++)
     {
+
         for (int quantite = quantiteDebut; quantite <= quantiteFin; quantite++)
         {
+            loop_count++;
             strcpy(filename, "");
             strcpy(filename, nomFichierSource);
             strcpy(nom, "");
@@ -129,9 +136,10 @@ int main(int argc, char *argv[])
             LireBitmap(pFichier, &bitmap);
             fclose(pFichier); // Fermeture du fichier contenant l'image
 
+            ConvertRGB2Gray(&bitmap);
             int im_size = bitmap.infoHeader.hauteur * bitmap.infoHeader.largeur;
-            printf("bitmap(l/h):%d/%d;im_size=%d\n", bitmap.infoHeader.largeur, bitmap.infoHeader.hauteur, im_size);
-            double *bitmap_div = (double *)malloc(im_size * sizeof(double));
+            // printf("bitmap(l/h):%d/%d;im_size=%d\n", bitmap.infoHeader.largeur, bitmap.infoHeader.hauteur, im_size);
+            uint8_t *bitmap_div = (uint8_t *)malloc(im_size * sizeof(uint8_t));
             int width, height;
             width = bitmap.infoHeader.largeur;
             height = bitmap.infoHeader.hauteur;
@@ -139,43 +147,44 @@ int main(int argc, char *argv[])
             {
                 for (int row = 0; row < height; row++)
                 {
-                    bitmap_div[width * row + col] = (double)((double)bitmap.mPixelsGray[row][col] / 255.f);
+                    bitmap_div[width * row + col] = bitmap.mPixelsGray[row][col];
                 }
             }
-            // for (int i = 0; i < im_size; i++)
-            // {
-            //     int j = (int)(i / width);
-            //     // printf("bitmap(i/j):%d/%d []=%f\n",i-j*bitmap.infoHeader.largeur,j,bitmap.mPixelsGray[i-j*bitmap.infoHeader.largeur][j] / 255.f);
-            //     bitmap_div[i] = (double)((double)bitmap.mPixelsGray[j][i - j * height] / 255.f);
-            // }
-            k2c_tensor img_tensor = {.array = bitmap_div,
-                                     .ndim = 2,
-                                     .numel = bitmap.infoHeader.hauteur * bitmap.infoHeader.largeur,
-                                     .shape = {bitmap.infoHeader.largeur, bitmap.infoHeader.hauteur, 1, 1, 1}};
 
-            // k2c_tensor img_tensor = {.array = bitmap_div,
-            //                          .ndim = 2,
-            //                          .numel = 784,
-            //                          .shape = {28,28, 1, 1, 1}};
-
-            model(&img_tensor, &output_tensor, conv2d_output_array, conv2d_kernel_array, conv2d_bias_array, max_pooling2d_output_array, conv2d_1_output_array, conv2d_1_kernel_array, conv2d_1_bias_array, max_pooling2d_1_output_array, flatten_output_array, dense_kernel_array, dense_bias_array);
-
-            printf("Prediction (%s)=", filename);
-            int index_local_max = 0;
-            double temp = 0;
-            for (int i = 0; i < output_size; i++)
+            //  Use the correct scaling, i.e., low and high.
+            const auto input = fdeep::tensor_from_bytes(bitmap_div,
+                                                        static_cast<std::size_t>(height),
+                                                        static_cast<std::size_t>(width),
+                                                        static_cast<std::size_t>(1),
+                                                        0.0f, 1.0f);
+            /**
+             * ======================================
+             */
+            const auto result = model.predict({input});
+            float results_float[10];
+            sscanf(fdeep::show_tensors(result).c_str(), "[[[[[[%f, %f, %f, %f, %f, %f, %f, %f, %f, %f]]]]]]", &results_float[0], &results_float[1], &results_float[2], &results_float[3], &results_float[4], &results_float[5], &results_float[6], &results_float[7], &results_float[8], &results_float[9]);
+            float local_max = 0;
+            int i_local_max;
+            for (int i = 0; i < 10; i++)
             {
-                if (output_tensor.array[i] > temp)
+                if (results_float[i] > local_max)
                 {
-                    temp = output_tensor.array[i];
-                    index_local_max = i;
+                    local_max = results_float[i];
+                    i_local_max = i;
                 }
             }
+            printf("max[%d]=%f\r\n", i_local_max, local_max);
+            if (i_local_max != chiffre)
+                error++;
+            /**
+             * ======================================
+             */
+            printf("Prediction (%s)=", filename);
             for (int i = 0; i < output_size; i++)
             {
                 if (i == chiffre)
                     printf("   %02d   ||", i);
-                else if (i == index_local_max)
+                else if (i == i_local_max)
                     printf(RED "   %02d   ||" RESET, i);
                 else
                     printf(YEL "   %02d   ||" RESET, i);
@@ -185,11 +194,11 @@ int main(int argc, char *argv[])
             for (int i = 0; i < output_size; i++)
             {
                 if (i == chiffre)
-                    printf(" %.4f ||", output_tensor.array[i]);
-                else if (i == index_local_max)
-                    printf(RED " %.4f ||" RESET, output_tensor.array[i]);
+                    printf(" %.4f ||", results_float[i]);
+                else if (i == i_local_max)
+                    printf(RED " %.4f ||" RESET, results_float[i]);
                 else
-                    printf(YEL " %.4f ||" RESET, output_tensor.array[i]);
+                    printf(YEL " %.4f ||" RESET, results_float[i]);
             }
             printf("\r\n=====================\r\n");
 
@@ -197,9 +206,7 @@ int main(int argc, char *argv[])
             free(bitmap_div);
         }
     }
-
-    free(output_tensor_array);
-    model_terminate(conv2d_output_array, conv2d_kernel_array, conv2d_bias_array, max_pooling2d_output_array, conv2d_1_output_array, conv2d_1_kernel_array, conv2d_1_bias_array, max_pooling2d_1_output_array, flatten_output_array, dense_kernel_array, dense_bias_array);
 #endif
+    printf("error count=%d/%d\r\n", error, loop_count);
     return 0;
 }
