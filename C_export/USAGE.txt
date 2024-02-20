@@ -1,5 +1,5 @@
-./aaa infer ../bmp_traitee_prof/ 0 9 0 10
-./aaa infer ../bmp_traitee_etu/ 0 9 1 10
-
 ./aaa convert ../../Database/Prof/bmpProcessedSeuil/ ../bmp_traitee_prof/ 0 9 0 20
 ./aaa convert ../../Database/Etudiant/bmpProcessedSeuil/ ../bmp_traitee_etu/ 0 9 1 10
+
+./aaa infer ../bmp_traitee_etu/ 0 9 1 9 fdeep_model_OLD.json
+./aaa infer ../bmp_traitee_prof/ 0 9 0 20 fdeep_model_mnist.json

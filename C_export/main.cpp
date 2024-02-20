@@ -24,8 +24,9 @@ int main(int argc, char *argv[])
     int chiffreDebut = 0, chiffreFin = 9;
     int quantiteDebut = 0, quantiteFin = 10;
     char nomFichierSource[200] = "../bmp_traitee/";
+    char nomFichierSource_fdeep[200] = "fdeep_model_mnist.json";
 
-    if (argc > 2)
+    if (argc > 6)
     {
         if (strstr(argv[1], "convert"))
         {
@@ -34,22 +35,25 @@ int main(int argc, char *argv[])
             chiffreFin = atoi(argv[5]);
             quantiteDebut = atoi(argv[6]);
             quantiteFin = atoi(argv[7]);
-            TraitementDonnees(&bitmap_traitement, argv[2], argv[3], chiffreDebut, chiffreFin, quantiteDebut, quantiteFin, (unsigned char)(255 / 2.f), 0, 1, 28, 28);
+            TraitementDonnees(&bitmap_traitement, argv[2], argv[3], chiffreDebut, chiffreFin, quantiteDebut, quantiteFin, (unsigned char)(255.f / 2.f), 0, 1, 28, 28);
             exit(0);
         }
-        else if (strstr(argv[1], "infer") && argc > 3)
+        else if (strstr(argv[1], "infer"))
         {
             strncpy(nomFichierSource, argv[2], 200);
             chiffreDebut = atoi(argv[3]);
             chiffreFin = atoi(argv[4]);
             quantiteDebut = atoi(argv[5]);
             quantiteFin = atoi(argv[6]);
+            strncpy(nomFichierSource_fdeep, argv[7], 200);
+            
         }
         else
         {
-            printf("Usage: infer||dossier||chiffreDebut||chiffreFin||quantiteDebut||quantiteFin\r\n");
+            printf("Usage: infer||dossier||chiffreDebut||chiffreFin||quantiteDebut||quantiteFin||model.json\r\n");
             printf("Usage: convert||source||dest||chiffreDebut||chiffreFin||quantiteDebut||quantiteFin\r\n");
             printf("argc=%d; argv[0]=\"%s\"; argv[1]=\"%s\";", argc, argv[0], argv[1]);
+            exit(1);
         }
     }
     else
@@ -58,7 +62,7 @@ int main(int argc, char *argv[])
         exit(1);
     }
 
-    const auto model = fdeep::load_model("fdeep_model.json");
+    const auto model = fdeep::load_model(nomFichierSource_fdeep);
 
     int output_size = 10;
     int error = 0;
