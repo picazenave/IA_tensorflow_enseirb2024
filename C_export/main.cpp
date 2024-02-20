@@ -11,10 +11,11 @@
 #define WHT "\x1B[37m"
 #define RESET "\x1B[0m"
 
-#include "TraitementImage.h"
-#include "k2c_tensor_include.h"
-#include "model.h"
-#include "Bmp2Matrix.h"
+#include "TraitementImage.hpp"
+#include "Bmp2Matrix.hpp"
+#include <fdeep/fdeep.hpp>
+
+using namespace std;
 
 int main(int argc, char *argv[])
 {
@@ -33,6 +34,7 @@ int main(int argc, char *argv[])
     // ConvertRGB2Gray(&bitmap);
     // printf("%d\n", bitmap.mPixelsGray[10][10]);
 
+    printf("aaaa\r\n");
     if (argc > 1)
     {
         if (strstr(argv[1], "convert"))
@@ -58,6 +60,7 @@ int main(int argc, char *argv[])
     // LireBitmap(pFichier, &bitmap);
     // fclose(pFichier); // Fermeture du fichier contenant l'image
 
+#if 0
     int output_size = 10;
     double *output_tensor_array = (double *)malloc(output_size * sizeof(double));
     k2c_tensor output_tensor = {output_tensor_array, 1, output_size, {output_size, 1, 1, 1, 1}};
@@ -171,5 +174,6 @@ int main(int argc, char *argv[])
 
     free(output_tensor_array);
     model_terminate(conv2d_output_array, conv2d_kernel_array, conv2d_bias_array, max_pooling2d_output_array, conv2d_1_output_array, conv2d_1_kernel_array, conv2d_1_bias_array, max_pooling2d_1_output_array, flatten_output_array, dense_kernel_array, dense_bias_array);
+#endif
     return 0;
 }

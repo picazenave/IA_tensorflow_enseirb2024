@@ -12,7 +12,7 @@ Pour exécuter, tapez : /
 #ifndef TRAITEMENTIMAGE_H
 #define TRAITEMENTIMAGE_H
 
-#include "Bmp2Matrix.h"
+#include "Bmp2Matrix.hpp"
 
 //Prototypes des fonctions
 void RognerBitmapMax(BMP* pBitmap,unsigned char valMax);

@@ -13,8 +13,8 @@ Pour exécuter, tapez : /
 #include <stdlib.h>
 #include <string.h>
 
-#include "Bmp2Matrix.h"
-#include "TraitementImage.h"
+#include "Bmp2Matrix.hpp"
+#include "TraitementImage.hpp"
 
 //Fonction permettant de rogner le signal de l'image selon une valeur donnée en seuil maximum
 void RognerBitmapMax(BMP* pBitmap,unsigned char valMax){

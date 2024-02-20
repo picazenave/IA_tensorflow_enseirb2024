@@ -2,6 +2,9 @@
     "files.associations": {
         "bmp2matrix.h": "c",
         "traitementimage.h": "c",
-        "stdlib.h": "c"
+        "stdlib.h": "c",
+        "k2c_tensor_include.h": "c",
+        "fdeep.hpp": "c",
+        "tensor_pos.hpp": "c"
     }
 }
