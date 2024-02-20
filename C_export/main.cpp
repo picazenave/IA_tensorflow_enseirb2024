@@ -14,25 +14,27 @@
 #include "TraitementImage.hpp"
 #include "Bmp2Matrix.hpp"
 #include <fdeep/fdeep.hpp>
-
+#include <fdeep/common.hpp>
+#include <vector>
+#include <Eigen/Core>
 using namespace std;
 
 int main(int argc, char *argv[])
 {
-    // BMP bitmap;
-    // FILE *pFichier = NULL;
-    // char filename[] = "1_0.bmp";
-    // pFichier = fopen(filename, "rb"); // Ouverture du fichier contenant l'image
-    // if (pFichier == NULL)
-    // {
-    //     printf("%s\n", "0_1.bmp");
-    //     printf("Erreur dans la lecture du fichier\n");
-    // }
-    // LireBitmap(pFichier, &bitmap);
-    // fclose(pFichier); // Fermeture du fichier contenant l'image
+    BMP bitmap;
+    FILE *pFichier = NULL;
+    char filename[] = "../bmp_traitee/1_0.bmp";
+    pFichier = fopen(filename, "rb"); // Ouverture du fichier contenant l'image
+    if (pFichier == NULL)
+    {
+        printf("%s\n", filename);
+        printf("Erreur dans la lecture du fichier\n");
+    }
+    LireBitmap(pFichier, &bitmap);
+    fclose(pFichier); // Fermeture du fichier contenant l'image
 
-    // ConvertRGB2Gray(&bitmap);
-    // printf("%d\n", bitmap.mPixelsGray[10][10]);
+    ConvertRGB2Gray(&bitmap);
+    printf("%d\n", bitmap.mPixelsGray[10][10]);
 
     printf("aaaa\r\n");
     if (argc > 1)
@@ -46,6 +48,30 @@ int main(int argc, char *argv[])
             printf("argc=%d; argv[0]=\"%s\"; argv[1]=\"%s\";", argc, argv[0], argv[1]);
     }
 
+    int im_size = bitmap.infoHeader.hauteur * bitmap.infoHeader.largeur;
+    printf("bitmap(l/h):%d/%d;im_size=%d\n", bitmap.infoHeader.largeur, bitmap.infoHeader.hauteur, im_size);
+    uint8_t *bitmap_div = (uint8_t *)malloc(im_size * sizeof(uint8_t));
+    int width, height;
+    width = bitmap.infoHeader.largeur;
+    height = bitmap.infoHeader.hauteur;
+    for (int col = 0; col < width; col++)
+    {
+        for (int row = 0; row < height; row++)
+        {
+            bitmap_div[width * row + col] = bitmap.mPixelsGray[row][col];
+        }
+    }
+
+    //  Use the correct scaling, i.e., low and high.
+    const auto input = fdeep::tensor_from_bytes(bitmap_div,
+                                                static_cast<std::size_t>(height),
+                                                static_cast<std::size_t>(width),
+                                                static_cast<std::size_t>(1),
+                                                0.0f, 1.0f);
+
+    const auto model = fdeep::load_model("fdeep_model.json");
+    const auto result = model.predict({input});
+    std::cout << fdeep::show_tensors(result) << std::endl;
     // BMP bitmap;
     // FILE *pFichier = NULL;
     // char filename[] = "../bmp_traitee/0_0.bmp";
